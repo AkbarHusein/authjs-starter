@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Footer } from '@/components/auth/footer'
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
-import { Social } from './social'
+import { Social } from '@/components/auth/social'
 import { cn } from '@/lib/utils'
 
 interface WrapperProps extends HeaderProps {
