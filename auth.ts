@@ -1,6 +1,8 @@
 import NextAuth, { NextAuthConfig } from 'next-auth'
 
 import Credentials from 'next-auth/providers/credentials'
+import GithubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
@@ -29,10 +31,15 @@ const authOptions: NextAuthConfig = {
                 return null
             },
         }),
+        GoogleProvider,
+        GithubProvider
     ],
     callbacks: { authorized: async ({ auth }) => !!auth },
     session: { strategy: 'jwt' },
-    secret: process.env.AUTH_SECRET
+    secret: process.env.AUTH_SECRET,
+    pages: {
+        signIn: '/signin'
+    }
 }
 
 export const { auth, handlers, signIn, signOut } = NextAuth(authOptions)
