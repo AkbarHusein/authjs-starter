@@ -1,6 +1,7 @@
 import './globals.css'
 
 import type { Metadata } from 'next'
+import { SessionProvider } from 'next-auth/react'
 import localFont from 'next/font/local'
 
 const geistSans = localFont({
@@ -24,6 +25,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  SessionProvider
   return (
     <html lang='en'>
       <body

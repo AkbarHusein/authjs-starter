@@ -10,6 +10,7 @@ import { signInSchema } from '@/schema/auth'
 import { z } from 'zod'
 
 const authOptions: NextAuthConfig = {
+    trustHost: true,
     adapter: PrismaAdapter(prisma),
     providers: [
         Credentials({
@@ -31,8 +32,14 @@ const authOptions: NextAuthConfig = {
                 return null
             },
         }),
-        GoogleProvider,
-        GithubProvider
+        GoogleProvider({
+            clientId: process.env.AUTH_GOOGLE_ID as string,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+        }),
+        GithubProvider({
+            clientId: process.env.AUTH_GITHUB_ID as string,
+            clientSecret: process.env.AUTH_GITHUB_SECRET as string,
+        })
     ],
     callbacks: { authorized: async ({ auth }) => !!auth },
     session: { strategy: 'jwt' },
