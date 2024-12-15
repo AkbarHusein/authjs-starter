@@ -15,36 +15,46 @@ import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { SignUpSchema } from '@/lib/zod'
 import { Wrapper } from '@/components/auth/wrapper'
-import { signup } from '@/app/actions/signup'
+import { signUpAct } from '@/app/actions/signUp'
+import { signUpSchema } from '@/schema/auth'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export function SignUpForm() {
+  const router = useRouter()
   const [isShowAlert, setIsShowAlert] = useState<FormAlertprops>()
   const [isPending, startTransition] = useTransition()
   const [showPassword, setShowPassword] = useState(false)
 
-  const form = useForm<z.infer<typeof SignUpSchema>>({
-    resolver: zodResolver(SignUpSchema),
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: '',
-      name: '',
-      phone: '',
       password: '',
       confirmPassword: ''
     }
   })
 
-  const submitHandler = (values: z.infer<typeof SignUpSchema>) => {
+  const submitHandler = async (values: z.infer<typeof signUpSchema>) => {
     setIsShowAlert(undefined)
-    startTransition(() => {
-      signup(values).then(data => {
-        setIsShowAlert({ type: data.type, message: data.message })
-      })
-    })
+
+    try {
+      const response = await signUpAct(values)
+
+      if (response) {
+        setIsShowAlert({ type: response.type, message: response.message })
+
+        if (response.type === 'success') {
+          startTransition(() => router.push('/signin'))
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      setIsShowAlert({ type: 'error', message: 'Something went wrong!' })
+    }
   }
 
   return (
@@ -69,34 +79,6 @@ export function SignUpForm() {
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input className='py-5' placeholder='Enter your email' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='name'
-              disabled={isPending}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input className='py-5' placeholder='Enter your name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='phone'
-              disabled={isPending}
-              render={({ field }) => (
-                <FormItem className='col-span-2'>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input className='py-5' placeholder='Enter your phone number' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
