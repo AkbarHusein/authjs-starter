@@ -17,7 +17,7 @@ import { CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Wrapper } from '@/components/auth/wrapper'
 import { signInAct } from '@/app/actions/signIn'
-import { signInSchema } from '@/schema/signIn'
+import { signInSchema } from '@/schema/auth'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
@@ -41,15 +41,13 @@ export function SignInForm() {
     setIsShowAlert(undefined)
 
     try {
-      const data = await signInAct(values)
+      const response = await signInAct(values)
 
-      if (data) {
-        setIsShowAlert({ type: data.type, message: data.message })
+      if (response) {
+        setIsShowAlert({ type: response.type, message: response.message })
 
-        if (data.type === 'success') {
-          startTransition(() => {
-            router.push('/dashboard')
-          })
+        if (response.type === 'success') {
+          startTransition(() => router.push('/dashboard'))
         }
       }
     } catch (error) {

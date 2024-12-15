@@ -4,7 +4,7 @@ import Credentials from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
-import { signInSchema } from '@/schema/signIn'
+import { signInSchema } from '@/schema/auth'
 import { z } from 'zod'
 
 const authOptions: NextAuthConfig = {

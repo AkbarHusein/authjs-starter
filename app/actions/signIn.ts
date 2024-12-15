@@ -2,7 +2,7 @@
 
 import { AuthError } from 'next-auth'
 import { signIn } from '@/auth'
-import { signInSchema } from '@/schema/signIn'
+import { signInSchema } from '@/schema/auth'
 import { z } from 'zod'
 
 async function signInAct(values: z.infer<typeof signInSchema>) {
